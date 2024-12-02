@@ -50,7 +50,35 @@ router.post("/", ...createPostRules, async (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  res.send("Update post by id");
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { title, content, author, tags } = req.body;
+
+  const updatePost = {
+    title,
+    content,
+    author,
+    tags,
+  };
+
+  Post.updateOne({ _id: req.params.id }, updatePost)
+    .then(() => {
+      res.status(200).json({
+        message: "Post updated successfully!",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
+
+  //res.send("Update post by id");
 });
 
 router.delete("/:id", (req, res) => {
