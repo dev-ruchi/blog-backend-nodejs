@@ -50,7 +50,6 @@ router.post("/", ...createPostRules, async (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -77,12 +76,22 @@ router.put("/:id", (req, res) => {
         error: error,
       });
     });
-
-  //res.send("Update post by id");
 });
 
 router.delete("/:id", (req, res) => {
-  res.send("Delete post by id");
+
+  Post.deleteOne({ _id: req.params.id })
+    .then(() => {
+      res.status(200).json({
+        message: "Deleted!",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
+
 });
 
 export default router;
