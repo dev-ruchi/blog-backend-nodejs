@@ -3,6 +3,7 @@ import express from "express";
 import { validationResult } from "express-validator";
 import Post from "../models/post.js";
 import createPostRules from "../rules/createPost.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -26,13 +27,15 @@ router.post("/", ...createPostRules, async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { title, body, author, tags, likes } = req.body;
+  const { title, body, tags, likes } = req.body;
+
+  const hardcodedAuthor = new mongoose.Types.ObjectId("674cf4c4885bbc8c0f2202d8");
 
   // Create the new post
   const newPost = new Post({
     title,
     body,
-    author: author || "John Doe",
+    author: hardcodedAuthor,
     tags: tags || [], // Default to an empty array if no tags are provided
     likes: likes || 0, // Default to 0 likes if not provided
   });

@@ -8,16 +8,16 @@ export default [
     .isLength({ max: 100 })
     .withMessage("Title must be at most 100 characters long"),
   body("body").notEmpty().withMessage("Body is required"),
-  body("author")
-    .isMongoId()
-    .withMessage("Author must be a valid ObjectId")
-    .custom(async (value) => {
-      // Check if the author exists in the database
-      const user = await User.findById(value);
-      if (!user) {
-        throw new Error("Author does not exist");
-      }
-    }),
+  // body("author")
+  //   .isMongoId()
+  //   .withMessage("Author must be a valid ObjectId")
+  //   .custom(async (value) => {
+  //     // Check if the author exists in the database
+  //     const user = await User.findById(value);
+  //     if (!user) {
+  //       throw new Error("Author does not exist");
+  //     }
+  //   }),
   body("tags")
     .optional()
     .isArray()
