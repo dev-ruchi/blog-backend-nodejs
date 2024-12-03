@@ -7,7 +7,7 @@ export default [
     .withMessage("Title must be a string")
     .isLength({ max: 100 })
     .withMessage("Title must be at most 100 characters long"),
-  body("content").notEmpty().withMessage("Content is required"),
+  body("body").notEmpty().withMessage("Body is required"),
   body("author")
     .isMongoId()
     .withMessage("Author must be a valid ObjectId")

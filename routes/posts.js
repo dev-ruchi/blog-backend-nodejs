@@ -26,13 +26,13 @@ router.post("/", ...createPostRules, async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { title, content, author, tags, likes } = req.body;
+  const { title, body, author, tags, likes } = req.body;
 
   // Create the new post
   const newPost = new Post({
     title,
-    content,
-    author,
+    body,
+    author: author || "John Doe",
     tags: tags || [], // Default to an empty array if no tags are provided
     likes: likes || 0, // Default to 0 likes if not provided
   });
@@ -56,11 +56,11 @@ router.put("/:id", (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { title, content, author, tags } = req.body;
+  const { title, body, author, tags } = req.body;
 
   const updatePost = {
     title,
-    content,
+    body,
     author,
     tags,
   };
@@ -79,7 +79,6 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-
   Post.deleteOne({ _id: req.params.id })
     .then(() => {
       res.status(200).json({
@@ -91,7 +90,6 @@ router.delete("/:id", (req, res) => {
         error: error,
       });
     });
-
 });
 
 export default router;
