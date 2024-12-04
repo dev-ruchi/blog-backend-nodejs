@@ -16,8 +16,30 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
-  res.send("Fetch post by id");
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  // Validate if the `id` is a valid MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid post ID" });
+  }
+
+  try {
+    // Query the database for the post
+    const post = await Post.findById(id);
+
+    if (!post) {
+      // Handle case when the post is not found
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // If the post exists, return it
+    res.status(200).json(post);
+  } catch (error) {
+    // Handle server errors
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+
 });
 
 router.post("/", ...createPostRules, async (req, res) => {
