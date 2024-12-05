@@ -39,7 +39,6 @@ router.get("/:id", async (req, res) => {
     // Handle server errors
     res.status(500).json({ message: "Server error", error: error.message });
   }
-
 });
 
 router.post("/", ...createPostRules, async (req, res) => {
@@ -51,7 +50,9 @@ router.post("/", ...createPostRules, async (req, res) => {
 
   const { title, body, tags, likes } = req.body;
 
-  const hardcodedAuthor = new mongoose.Types.ObjectId("674cf4c4885bbc8c0f2202d8");
+  const hardcodedAuthor = new mongoose.Types.ObjectId(
+    "674cf4c4885bbc8c0f2202d8"
+  );
 
   // Create the new post
   const newPost = new Post({
@@ -115,6 +116,38 @@ router.delete("/:id", (req, res) => {
         error: error,
       });
     });
+});
+
+router.post("/:id/comments", async (req, res) => {
+  const { id } = req.params;
+
+  // Validate if the `id` is a valid MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid post ID" });
+  }
+
+  try {
+    // Find the post by its ID and push the new comment into the comments array
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      { $push: { comments: req.body } },
+      { new: true } // Return the updated document
+    )
+      .populate("comments.author", "name") // Populate author field if needed
+      .exec();
+
+    if (!updatedPost) {
+      console.log("Post not found!");
+      return null;
+    }
+
+    // TODO: Send the added comment in response
+    return res.json({ message: "Comment added successfully" });
+  } catch (error) {
+    res.status(400).json({
+      error: error,
+    });
+  }
 });
 
 export default router;
