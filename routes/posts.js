@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import { validationResult } from "express-validator";
+import { auth } from "./middlewares/auth.middleware.js";
 import Post from "../models/post.js";
 import createPostRules from "../rules/createPost.js";
 import mongoose from "mongoose";
@@ -41,7 +42,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", ...createPostRules, async (req, res) => {
+router.post("/", ...createPostRules, auth, async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -50,15 +51,11 @@ router.post("/", ...createPostRules, async (req, res) => {
 
   const { title, body, tags, likes } = req.body;
 
-  const hardcodedAuthor = new mongoose.Types.ObjectId(
-    "674cf4c4885bbc8c0f2202d8"
-  );
-
   // Create the new post
   const newPost = new Post({
     title,
     body,
-    author: hardcodedAuthor,
+    author: req.userId,
     tags: tags || [], // Default to an empty array if no tags are provided
     likes: likes || 0, // Default to 0 likes if not provided
   });

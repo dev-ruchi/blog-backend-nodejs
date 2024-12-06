@@ -14,14 +14,14 @@ app.use(bodyParser.json());
 const port = 3000;
 
 import postsRouter from "./routes/posts.js";
-import usersRouter from "./routes/auth.js"
+import authRouter from "./routes/auth.js";
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 app.use("/posts", postsRouter);
-app.use("/users", usersRouter);
+app.use("/auth", authRouter);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
